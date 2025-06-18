@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 
 export class NewsItem extends Component {
+ 
   render() {
-    let {title,description} = this.props;
+    let {title,description,imageUrl,newsUrl} = this.props;
     return (
        <div>
-        <div className="card" style={{width: "18rem"}}>
+        <div className="card newItemCard" style={{width: "18rem"}}>
+          <img src={!imageUrl?"https://bloximages.newyork1.vip.townnews.com/journalnow.com/content/tncms/assets/v3/editorial/c/32/c320bcdd-61e7-5ff2-9c42-33046840ca09/68523a40123a4.image.jpg?resize=300%2C225":imageUrl}
+             className='card-img-top newItemImg' alt="" />
           <div className="card-body">
-            <h5 className="card-title">{title}</h5>
-            <h6 className="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+            <h5 className="card-title text-body-secondary">{title}...</h5>
+            <p className="card-text">{description}...</p>
+            <a href={newsUrl} target='_blank' className='btn btn-sm btn-primary'>Read More</a>
           </div>
         </div>
     </div>
