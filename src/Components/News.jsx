@@ -6,16 +6,51 @@ export class News extends Component {
     super();
     this.state = {
       results: [] ,
-      loading: false
+      loading: false,
+      prevPages: [],
+      nextPage: null
+
     };
   }
   
-   async componentDidMount(){
-    let url = "https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&q=all";
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    console.log(parsedData);
-    this.setState({ results: parsedData.results });
+  fetchNews = async(page = null) =>{
+     let url = "https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&q=all";
+     if(page){
+      url += `&page=${page}`;
+     }
+     const response = await fetch(url);
+     const data = await response.json();
+
+     this.setState((prevState) =>({
+      results : data.results || [],
+      nextPage : data.nextPage || null,
+      prevPages : page ? [...prevState.prevPages, page] : prevState.prevPages,
+     }));
+  }
+  componentDidMount(){
+    this.fetchNews();
+  }
+
+  handlePrevClick = () =>{
+    console.log("Previous")
+    const prevStack = [...this.state.prevPages];
+    prevStack.pop(); // remove current page
+    const previousPage = prevStack.pop(); // get the one before
+
+    if (previousPage) {
+      this.setState({ prevPages: prevStack }, () => {
+        this.fetchNews(previousPage);
+      });
+    } else {
+      // If no previous, go back to first page
+      this.setState({ prevPages: [] }, () => this.fetchNews());
+    }
+  }
+   handleNextClick = () =>{
+    console.log("Next")
+    if(this.state.nextPage){
+      this.fetchNews(this.state.nextPage);
+    }
   }
   render() {
     return (
@@ -38,6 +73,10 @@ export class News extends Component {
               })}
               </div>
         </div>
+      </div>
+      <div className="container d-flex justify-content-between">
+        <button type="button" className="btn btn-dark" onClick={this.handlePrevClick} disabled={this.state.prevPages.length===0}>&larr; Previous</button>
+        <button type="button" className="btn btn-dark" onClick={this.handleNextClick} disabled={!this.state.nextPage}>Next &rarr;</button>
       </div>
     </div>
     )
