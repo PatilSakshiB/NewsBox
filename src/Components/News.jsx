@@ -1,7 +1,20 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem';
+import Spinner from './Spinner';
+import PropTypes from 'prop-types'
 
 export class News extends Component {
+static defaultProps ={
+  country : 'in',
+  size : 5,
+  category : 'top'
+}
+static propTypes={
+  country:PropTypes.string,
+  size:PropTypes.number,
+  category:PropTypes.string
+}
+
    constructor() {
     super();
     this.state = {
@@ -14,17 +27,19 @@ export class News extends Component {
   }
   
   fetchNews = async(page = null) =>{
-     let url = "https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&q=all";
+     let url = `https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&country=${this.props.country}&category=${this.props.category}&size=${this.props.size}`;
      if(page){
       url += `&page=${page}`;
      }
+     this.setState({loading:true});
      const response = await fetch(url);
      const data = await response.json();
-
+     this.setState({loading:false});
      this.setState((prevState) =>({
       results : data.results || [],
       nextPage : data.nextPage || null,
       prevPages : page ? [...prevState.prevPages, page] : prevState.prevPages,
+      loading : false
      }));
   }
   componentDidMount(){
@@ -41,9 +56,8 @@ export class News extends Component {
       this.setState({ prevPages: prevStack }, () => {
         this.fetchNews(previousPage);
       });
-    } else {
-      // If no previous, go back to first page
-      this.setState({ prevPages: [] }, () => this.fetchNews());
+    } else { 
+      this.setState({ prevPages: [] }, () => this.fetchNews()); // If no previous, go back to first page
     }
   }
    handleNextClick = () =>{
@@ -58,8 +72,9 @@ export class News extends Component {
       <div>
         <div className="container mt-4">
            <h3 className=''>NewBox : Top HeadLines</h3>
+           {this.state.loading && <Spinner/>}
           <div className="row my-3">
-              {this.state.results.map((element, index) => {
+              {!this.state.loading && this.state.results.map((element, index) => {
                 return (
                   <div className="col-md-4 my-3" key={index}>
                     <NewsItem

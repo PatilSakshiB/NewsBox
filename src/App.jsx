@@ -9,7 +9,7 @@ function App() {
   return (
     <>
      <Navbar/>
-     <News/>
+     <News size={5} country="in" category="sports"/>
     </>
   )
 }
