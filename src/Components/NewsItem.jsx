@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 export class NewsItem extends Component {
  
   render() {
-    let {title,description,imageUrl,newsUrl,author,date} = this.props;
+    let {title,description,imageUrl,newsUrl,date} = this.props;
     return (
        
-        <div className="card newItemCard m-auto rounded-4 h-100 w-100" >
+        <div className="card newItemCard m-auto h-100 w-100" >
           <img src={!imageUrl?"https://bloximages.newyork1.vip.townnews.com/journalnow.com/content/tncms/assets/v3/editorial/c/32/c320bcdd-61e7-5ff2-9c42-33046840ca09/68523a40123a4.image.jpg?resize=300%2C225":imageUrl}
              className='card-img-top newItemImg' alt="" />
           <div className="card-body">
