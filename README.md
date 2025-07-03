@@ -18,8 +18,6 @@
   - `science`
   - `sports`
   - `technology`
-  - `tourism`
-  - `world`
 - 🖼️ Clean and responsive UI using Bootstrap 5
 - ⏳ Loading spinner for a smooth experience
 - ⬅️➡️ Pagination with Previous/Next buttons
