@@ -1,12 +1,38 @@
-# React + Vite
+# 📰 NewsBox - React News Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**NewsBox** is a simple and responsive news web application built using React. It fetches real-time news articles using the [NewsData.io](https://newsdata.io/) API and displays them in a user-friendly card layout with pagination and category filtering.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 🔎 **Top headlines** from across the web
+- 📂 **Category-wise filtering**, including:
+  - `top`
+  - `business`
+  - `entertainment`
+  - `environment`
+  - `food`
+  - `health`
+  - `politics`
+  - `science`
+  - `sports`
+  - `technology`
+  - `tourism`
+  - `world`
+- 🖼️ Clean and responsive UI using Bootstrap 5
+- ⏳ Loading spinner for a smooth experience
+- ⬅️➡️ Pagination with Previous/Next buttons
+- 🔗 "Read More" links open the full article
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React (Class Components)
+- **Styling:** Bootstrap 5
+- **API:** [NewsData.io](https://newsdata.io/)
+- **Bundler:** Vite
+
+---
+
