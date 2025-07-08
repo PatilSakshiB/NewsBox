@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NewsItem from './NewsItem';
 import Spinner from './Spinner';
 import PropTypes from 'prop-types';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export class News extends Component {
   static defaultProps = {
@@ -24,41 +25,35 @@ export class News extends Component {
     super(props);
     this.state = {
       results: [],
-      loading: false,
+      loading: true,
       prevPages: [],
       nextPage: null,
-      error: null
+      error: null,
+      totalResults: 0
     };
     document.title = `${this.capitalizeLetter(this.props.category)} - NewsBox`
   }
 
-  fetchNews = async (page = null) => {
+  fetchNews = async () => {
+    this.props.setProgress(10);
     this.setState({ loading: true, error: null });
-
-    let url = `https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&country=${this.props.country}&category=${this.props.category}&size=${this.props.size}&language=en`;
-    if (page) {
-      url += `&page=${page}`;
-    }
-
+    const { country, category, size } = this.props;
+    const url = `https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&country=${country}&category=${category}&size=${size}&language=en`;
     try {
       const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
+      if (!response.ok) throw new Error(`Error: ${response.status} ${response.statusText}`);
       const data = await response.json();
       const results = Array.isArray(data.results) ? data.results : [];
-
-      this.setState((prevState) => ({
+      this.setState({
         results,
         nextPage: data.nextPage || null,
-        prevPages: page ? [...prevState.prevPages, page] : prevState.prevPages,
+        totalResults: data.totalResults || results.length,
         loading: false
-      }));
+      });
+       this.props.setProgress(100);
     } catch (error) {
-      console.error("Fetching failed:", error.message);
-      this.setState({ loading: false, results: [], error: error.message });
+      console.error("Initial fetch failed:", error.message);
+      this.setState({ loading: false, error: error.message });
     }
   };
 
@@ -66,31 +61,52 @@ export class News extends Component {
     this.fetchNews();
   }
 
-  handlePrevClick = () => {
-    const prevStack = [...this.state.prevPages];
-    prevStack.pop(); // remove current page
-    const previousPage = prevStack.pop(); // get the one before
+  // handlePrevClick = () => {
+  //   const prevStack = [...this.state.prevPages];
+  //   prevStack.pop(); // remove current page
+  //   const previousPage = prevStack.pop(); // get one before
+  //   if (previousPage) {
+  //     this.setState({ prevPages: prevStack }, () => {
+  //       this.fetchNews(previousPage);
+  //     });
+  //   } else {
+  //     this.setState({ prevPages: [] }, () => this.fetchNews());
+  //   }
+  // };
+  // handleNextClick = () => {
+  //   if (this.state.nextPage) {
+  //     this.fetchNews(this.state.nextPage);
+  //   }
+  // };
 
-    if (previousPage) {
-      this.setState({ prevPages: prevStack }, () => {
-        this.fetchNews(previousPage);
-      });
-    } else {
-      this.setState({ prevPages: [] }, () => this.fetchNews());
-    }
-  };
+  fetchMoreData = async () => {
+  if (!this.state.nextPage) return;
 
-  handleNextClick = () => {
-    if (this.state.nextPage) {
-      this.fetchNews(this.state.nextPage);
-    }
-  };
+  try {
+    const url = `https://newsdata.io/api/1/latest?apikey=pub_e293c4a0a3994111acc2dfade6db3835&country=${this.props.country}&category=${this.props.category}&size=${this.props.size}&language=en&page=${this.state.nextPage}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const moreResults = Array.isArray(data.results) ? data.results : [];
+
+    this.setState((prevState) => ({
+      results: prevState.results.concat(moreResults),
+      nextPage: data.nextPage || null,
+      prevPages: [...prevState.prevPages, data.nextPage],
+      totalResults: data.totalResults,
+    }));
+  } catch (error) {
+    console.error("Fetching more data failed:", error.message);
+    this.setState({ error: error.message });
+  }
+};
+
+
 
   render() {
     return (
-      <div className='container'>
+      <>
         <div className="container mt-4">
-          <h3 className="">NewsBox : Top Headlines</h3>
+          <h3 className="">NewsBox : Top {this.capitalizeLetter(this.props.category)} Headlines</h3>
           {this.state.loading && <Spinner />}
 
           {this.state.error && (
@@ -105,9 +121,15 @@ export class News extends Component {
             </div>
           )}
 
+          <InfiniteScroll
+          dataLength={this.state.results.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.nextPage !== null}
+          loader={<Spinner/>}
+        >
+          <div className="container">
           <div className=" row my-3">
-            {!this.state.loading &&
-              this.state.results.map((element, index) => (
+            {this.state.results.map((element, index) => (
                 <div className="col-md-4 my-3" key={index}>
                   <NewsItem
                     title={element.title ? element.title.slice(0, 42) : ""}
@@ -119,27 +141,22 @@ export class News extends Component {
                 </div>
               ))}
           </div>
+          </div>
+          </InfiniteScroll>
         </div>
 
-        <div className="container d-flex justify-content-between">
-          <button
-            type="button"
-            className="btn btn-dark"
-            onClick={this.handlePrevClick}
-            disabled={this.state.prevPages.length === 0}
-          >
+        {/* //Previous & Next button Logic
+         <div className="container d-flex justify-content-between">
+          <button type="button" className="btn btn-dark" onClick={this.handlePrevClick}
+            disabled={this.state.prevPages.length === 0}  >
             &larr; Previous
           </button>
-          <button
-            type="button"
-            className="btn btn-dark"
-            onClick={this.handleNextClick}
-            disabled={!this.state.nextPage}
-          >
+          <button type="button" className="btn btn-dark" onClick={this.handleNextClick}
+            disabled={!this.state.nextPage} >
             Next &rarr;
           </button>
-        </div>
-      </div>
+        </div> */}
+      </>
     );
   }
 }
