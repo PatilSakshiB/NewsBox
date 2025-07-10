@@ -9,7 +9,6 @@
 - 🔄 **Infinite Scroll** – auto-load more articles as you scroll
 - 🔎 **Top headlines** from across the world
 - 📂 **Category-based filtering**, including:
-  - `top`
   - `business`
   - `entertainment`
   - `environment`
