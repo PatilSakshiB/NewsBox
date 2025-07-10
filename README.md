@@ -1,13 +1,14 @@
 # 📰 NewsBox - React News Application
 
-**NewsBox** is a simple and responsive news web application built using React. It fetches real-time news articles using the [NewsData.io](https://newsdata.io/) API and displays them in a user-friendly card layout with pagination and category filtering.
+**NewsBox** is a modern and responsive news web application built using **React**. It fetches real-time news articles using the [NewsData.io](https://newsdata.io/) API and displays them in a user-friendly, infinite scrolling layout. Users can explore headlines by category, read brief summaries, and open full articles — all in a smooth, performance-optimized interface.
 
 ---
 
 ## 🚀 Features
 
-- 🔎 **Top headlines** from across the web
-- 📂 **Category-wise filtering**, including:
+- 🔄 **Infinite Scroll** – auto-load more articles as you scroll
+- 🔎 **Top headlines** from across the world
+- 📂 **Category-based filtering**, including:
   - `top`
   - `business`
   - `entertainment`
@@ -18,19 +19,24 @@
   - `science`
   - `sports`
   - `technology`
-- 🖼️ Clean and responsive UI using Bootstrap 5
-- ⏳ Loading spinner for a smooth experience
-- ⬅️➡️ Pagination with Previous/Next buttons
-- 🔗 "Read More" links open the full article
+- 🖼️ Clean and responsive UI using **Bootstrap 5**
+- ⏳ Custom **loading spinner** for a smoother UX
+- 🔗 “Read More” links open the full article in a new tab
+- 📅 Displays article publish date
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React (Class Components)
-- **Styling:** Bootstrap 5
-- **API:** [NewsData.io](https://newsdata.io/)
-- **Bundler:** Vite
+| Layer     | Technology            |
+|-----------|------------------------|
+| Frontend  | React (Functional Components with Hooks) |
+| Styling   | Bootstrap 5            |
+| API       | [NewsData.io](https://newsdata.io/) |
+| Loader    | Custom Spinner         |
+| Pagination | Infinite Scroll (`react-infinite-scroll-component`) |
+| Build Tool | Vite                  |
 
 ---
+
 
